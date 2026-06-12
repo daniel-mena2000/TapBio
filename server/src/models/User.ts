@@ -1,14 +1,17 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 //Un schema es la forma que tendran los datos va muy relacionado con el modelo que estemos usando, en el caso de otros ORMS se define el modelo junto al schema, en el caso de mongoDB se define el schema y despues se asocia con el modelo
 //Es parecido a una tabla en SQL, pero únicamente la definición.
+//descripcion no sera requerido al iniciar sesion, este de editara ya dentro del panel de admin dentro de la vista ProfileView
 
-type UserType = {
+export interface UserType extends Document {
     handle: string
     name: string
     email: string
     password: string
+    description: string
 }
+
 
 const userSchema = new Schema({
     handle:{
@@ -33,6 +36,11 @@ const userSchema = new Schema({
     password: {
         type: String,
         require: true,
+        trim: true
+    },
+    description: {
+        type: String,
+        default: '',
         trim: true
     }
 })

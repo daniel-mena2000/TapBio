@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { createAccount, login } from "./handlers/index.js";
+import { createAccount, getUser, login, updateProfile } from "./handlers/index.js";
 import { validationResult } from "express-validator"
 import { handleInputErrors } from "./middleware/validation.js";
+import { authenticate } from "./middleware/auth.js";
 
 const router = Router()
 //Express validator tiene distintas validaciones, en este caso usaremos las de "req.body", y estas estaran antes de mandar llamar las funciones de handle o controllers
@@ -24,5 +25,14 @@ router.post('/auth/login',
 
     login
 )
+
+router.get('/user', authenticate, getUser)
+
+router.patch('/user',
+    body('handle').notEmpty().withMessage('El handle no puede ir vacio') ,
+    body('description').notEmpty().withMessage('la descripcion no puede ir vacia') ,
+    handleInputErrors,
+    authenticate,
+     updateProfile)
 
 export default router
