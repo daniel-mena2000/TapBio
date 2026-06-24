@@ -1,13 +1,24 @@
 import { Toaster } from "sonner";
 import { Link, Outlet } from "react-router";
 import NavigationTabs from "../components/NavigationTabs";
-import type { UserDataT } from "../types";
+import type { SocialNetwork, UserDataT } from "../types";
+import { useEffect, useState } from "react";
+import { TapBioLinks } from "./TapBioLinks";
 
 type TapBioProps = {
     data: UserDataT
 }
 
 export function TapBio({data}: TapBioProps) {
+
+//Si queremos colocar un red social en el perfil verificamos cuales estan como enabled
+    const [enabledLinks, setEnabledLinks] = useState<SocialNetwork[]>(JSON.parse(data.links).filter((item: SocialNetwork)  => item.enabled))
+
+//UseEffect para que cada que habilite o deshabilite un link este se vea reflejado en la interfaz dependiendo si esta activo o no
+    useEffect(()=> {
+        setEnabledLinks(JSON.parse(data.links).filter((item: SocialNetwork)  => item.enabled))
+    },[data])
+
 return <>
 <div className="min-h-screen bg-slate-50">
         {/* Header */}
@@ -91,6 +102,25 @@ return <>
               <p className="mt-2 text-sm text-slate-500">
                 Así verán tu perfil los visitantes.
               </p>
+
+              <div className="mt-10">
+                    <p className="text-4xl text-center p-2">{data.name}</p>
+                    <span className="text-xs text-gray-400 text-center block w-full p-2">{data.handle}</span>
+                    {data.image ?
+                        <img src={data.image} alt="Imagen perfil" className="mx-auto max-w-['250px']"/>
+                        :
+                        <img src="https://res.cloudinary.com/dw0gkpu7i/image/upload/q_auto/f_auto/v1781383771/ubyfrxropymb5wtp7mtd.png" alt="" />
+                    }
+
+                    <p className="text-center text-lg font-black p-2">{data.description}</p>
+
+                    <div className="mt-20 flex flex-col gap-5">
+                        {enabledLinks.map(item => (
+                            <TapBioLinks key={item.name} item={item}/>
+                        ))}
+
+                    </div>
+              </div>
             </aside>
           </div>
         </main>

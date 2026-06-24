@@ -1,8 +1,10 @@
 import type { Request, Response } from "express"
 import slug from "slug"
 import User from "../models/User.js"//Modelo
+import cloudinary from "../config/cloudinary.js"
 import { checkPassword, hashPassword } from "../utils/auth.js"
 import { generateJWT } from "../utils/jwt.js"
+import formidable from "formidable" //Es ideal para manejar imágenes, documentos o videos desde la computadora del usuario hacia tu servidor.
 
 //Como req y res eran del router aqui en el handler necesitamos tiparlo, y esto nos lo da express
 export const createAccount = async(req: Request, res: Response) => {
@@ -18,7 +20,7 @@ export const createAccount = async(req: Request, res: Response) => {
         return res.status(409).json({error: error.message})
     }
 //Verificar que un handle ya existe
-    const handle = `${slug(req.body.handle, '')}`
+    const handle = `@${slug(req.body.handle, '_')}`
       const handleExist = await User.findOne({handle})
 
     if (handleExist) {
@@ -30,6 +32,7 @@ export const createAccount = async(req: Request, res: Response) => {
 //Le pasamos el password de req.body, esta funcion en asyncrona por eso colocams await
     user.password = await hashPassword(password)
     user.handle = handle
+//await req.user.save() es lo que guarda en MongoDB los cambios que hiciste sobre el documento.
     await user.save()
 
 
@@ -75,9 +78,9 @@ export async function getUser(req: Request, res: Response) {
 
 export async function updateProfile(req: Request, res: Response) {
     try {
-        const {description} = req.body
+        const {description, links} = req.body
 
-        const handle = `${slug(req.body.handle, '')}`
+        const handle = `@${slug(req.body.handle, '_')}`
       const handleExist = await User.findOne({handle})
 
     if (handleExist && handleExist.email !== req.user.email) {
@@ -87,6 +90,7 @@ export async function updateProfile(req: Request, res: Response) {
 //Actualizar el usuario
 req.user.description = description
 req.user.handle = handle
+req.user.links = links
 
 //Para TypeScript, req.user es simplemente: handle,name,email,passwordy description ya que asi lo modificamos anteriormente, es por eso que save() nos marca error ya que req.user no sabe que es. es por eso que necesitamos extender de Document donde se encuentran estos metodos de mongoose, todo esto en User.ts
 //También te recomiendo agregar una validación porque user es opcional:
@@ -101,6 +105,45 @@ res.send('Perfil actualizado correctamente')
 
     } catch (error) {
         return res.status(500).json({
+            error: 'Hubo un error'
+        })
+    }
+}
+
+
+export const uploadImage = async (req: Request, res: Response) => {
+//multiples: false: Indica que cada campo de archivo solo puede contener un archivo.
+    const formi = formidable({multiples: false}) //Configuración del soporte
+
+    try {
+//Recibe 3 parametros
+       formi.parse(req, (error, fields, files) => {
+//Le pasamos nuestro "filepthat", {} son algunas configuraciones, y despues recibe una funcion asincrona, ya que va a interactuar con nuestra API, esta funcion recibe "error, result"
+//result nos dara toda la info de claudinary entre esa info estara "secure_url" donde estara ya alojada la imagen
+        cloudinary.uploader.upload(files.avatar[0].filepath, {}, async function(error, result) {
+
+            if (error) {
+              return res.status(500).json({
+                error: 'Hubo un error al subir tu imagen'
+                })
+           }
+           if (result) {
+//Aignamos la imagen
+            req.user.image = result.secure_url
+
+            await req.user.save()
+
+            res.json({image: result.secure_url})
+
+           }
+
+
+        })
+
+       }) //Leyendo los datos que el usuario ingreso
+
+    } catch (error) {
+         return res.status(500).json({
             error: 'Hubo un error'
         })
     }

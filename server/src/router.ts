@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { createAccount, getUser, login, updateProfile } from "./handlers/index.js";
+import { createAccount, getUser, login, updateProfile, uploadImage } from "./handlers/index.js";
 import { validationResult } from "express-validator"
 import { handleInputErrors } from "./middleware/validation.js";
 import { authenticate } from "./middleware/auth.js";
@@ -33,6 +33,11 @@ router.patch('/user',
     body('description').notEmpty().withMessage('la descripcion no puede ir vacia') ,
     handleInputErrors,
     authenticate,
-     updateProfile)
+     updateProfile
+)
+
+//Para poder cambiar la imagen primero tiene que estar autenticado
+router.post('/user/image', authenticate, uploadImage)
+
 
 export default router

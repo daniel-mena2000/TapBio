@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { ErrorMessage } from "../components/ErrorMessage";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import type { ProfileForm, UserDataT } from "../types";
-import { updateProfile } from "../api/TapBioApi";
+import { updateProfile, uploadImage } from "../api/TapBioApi";
 import { toast } from "sonner";
 
 
@@ -12,7 +12,7 @@ export function ProfileView() {
 const queryClient = useQueryClient()
 const data : UserDataT = queryClient.getQueryData(['user'])!
 
-console.log(data);
+//console.log(data);
 
 
 //Descripcion podemos o no que sea obligatoria,
@@ -23,9 +23,9 @@ console.log(data);
         }})
 
 //Usamos useMutation de tanstackQuery, este se usa a la hora de modificar como con UPDATE o PATCH
-//mutation maneja dentro sus propios errores y seucces
+//mutation maneja dentro sus propios errores y succes
 //como en updateProfile estamos retornando "data" este se pasa en automatico aqui
-//Usamos Query invalidation, Si actualizamos algo invalidamos lo que teniamos y vuelve a hacer la consulta para traer los datos actualizados en la DB
+
 const updateProfileMutation = useMutation({
 //Le indicamos la funcion que queremos ejecutar
     mutationFn: updateProfile,
@@ -33,16 +33,56 @@ const updateProfileMutation = useMutation({
         toast.error(error.message)
     },
     onSuccess: (data) => {
-
+//Usamos Query invalidation, para actualizar el cache manualmente, si alguien edita su información, este borrara el cache y actualizara los datos nuevos, asi no tenemos que recargar la pagina para ver los cambios, si no que descarga nuevamente la info del usuario
         toast.success(data)
         queryClient.invalidateQueries({queryKey: ['user']})
 
     }
 })
 
+
+const uploadImageMutation = useMutation({
+//Le indicamos la funcion que queremos ejecutar
+    mutationFn: uploadImage,
+    onError: (error) => {
+        toast.error(error.message)
+
+    },
+    onSuccess: (data) => {
+        //console.log(data);
+//Opción 2: Actualizar el cache directamente, Aquí no hace ninguna petición. Simplemente React Query actualiza el estado local.
+        queryClient.setQueryData(['user'], (prevData: UserDataT) => {
+            return {
+                ...prevData,
+                image: data.image
+            }
+        })
+
+        //queryClient.invalidateQueries({queryKey: ['user']})
+
+
+    }
+})
+
+const handleChange = (e:  React.ChangeEvent<HTMLInputElement, HTMLInputElement>) => {
+//entramos a "files" del input ahi esta la info que queremos mandar al backend
+    if (e.target.files) {
+
+        uploadImageMutation.mutate(e.target.files[0])
+    }
+
+ }
+
+//formData solo actualiza solo descripcition y handle pero podemos obtener toda la instancia de "user" para actualizar esos datos que necesitamos "description" y "handle"
 const handleUserProfileProps = (formData: ProfileForm) => {
+    const user : UserDataT = queryClient.getQueryData(['user'])!
+    user.description = formData.description
+    user.handle = formData.handle
+    //console.log(user);
+    //console.log(formData);
+
 //En mutate colocas tus variables que vas a enviar para realizar el cambio, en este caso es handle y description
-    updateProfileMutation.mutate(formData)
+    updateProfileMutation.mutate(user)
 
 }
 
@@ -65,7 +105,7 @@ const handleUserProfileProps = (formData: ProfileForm) => {
       {/* Imagen */}
       <div className="flex flex-col items-center gap-4">
         <img
-          src="/profile.png"
+          src={data.image}
           alt="Avatar"
           className="h-28 w-28 rounded-full object-cover border-4 border-slate-100"
         />
@@ -94,7 +134,7 @@ const handleUserProfileProps = (formData: ProfileForm) => {
           type="file"
           accept="image/*"
           className="hidden"
-          onChange={() => {}}
+          onChange={handleChange}
         />
       </div>
 
