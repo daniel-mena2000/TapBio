@@ -6,7 +6,7 @@ export default function AuthLayout() {
    <div className="mx-auto bg-gray-100 lg:max-w-full md:max-w-4xl">
 
 
-        <Toaster position="top-center" />
+        <Toaster position="top-center" theme="dark" visibleToasts={2}/>
 
 
         <main className="md:min-h-screen md:grid md:grid-cols-2 md:gap-12 md:items-center

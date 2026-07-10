@@ -3,7 +3,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getUser } from "../api/TapBioApi";
 import { TapBio } from "../components/TapBio";
 
+
 export default function AppLayout() {
+
+
 //**Queries:** Se utilizan para obetener datos de un servidor o una API(GET)
 //**Mutations:** Se utilizan para crear / actualizar / eliminar datos en el servidor (POST, PUT, PATCH, DELETE)
 //[TanStack Query (React Query)] sirve para manejar y sincronizar datos del servidor en aplicaciones React de forma mucho más simple y eficiente.
@@ -15,6 +18,8 @@ const {data, isLoading, isError } = useQuery({
     retry: 1,
     refetchOnWindowFocus: false
 })
+
+
 
 
 //El codigo que ayuda a proteger la rutas es mejor colocarlo en el padre si proteges las hijas
@@ -30,4 +35,7 @@ if (isError) {
 
 //Si la api ya nos devolvio datos entonces cargamos el componente
   if (data) return <TapBio data={data}/>
+
+
+
 }
