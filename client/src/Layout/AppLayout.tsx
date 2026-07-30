@@ -7,15 +7,16 @@ import { TapBio } from "../components/TapBio";
 export default function AppLayout() {
 
 
-//**Queries:** Se utilizan para obetener datos de un servidor o una API(GET)
+//**Queries:** (useQuery) Se utilizan para obetener datos de un servidor o una API(GET)
 //**Mutations:** Se utilizan para crear / actualizar / eliminar datos en el servidor (POST, PUT, PATCH, DELETE)
 //[TanStack Query (React Query)] sirve para manejar y sincronizar datos del servidor en aplicaciones React de forma mucho más simple y eficiente.
 //queryFN: Es la función que obtiene los datos. O sea: > la petición a la API.
 //queryKey: Es la forma en la que reactQuery va a identificar el query de getUser
+//Si queremos cerrar la sesión tenemos que invalidar este usuario, si no se va a quedar cacheado
 const {data, isLoading, isError } = useQuery({
     queryFn: getUser,
     queryKey: ['user'],
-    retry: 1,
+    retry: 2,
     refetchOnWindowFocus: false
 })
 

@@ -78,7 +78,7 @@ export async function getUser(req: Request, res: Response) {
 
 export async function updateProfile(req: Request, res: Response) {
     try {
-        const {description, links} = req.body
+        const {description, links, name} = req.body
 
         const handle = `@${slug(req.body.handle, '_')}`
       const handleExist = await User.findOne({handle})
@@ -88,6 +88,7 @@ export async function updateProfile(req: Request, res: Response) {
         return res.status(409).json({error: error.message})
     }
 //Actualizar el usuario
+req.user.name = name
 req.user.description = description
 req.user.handle = handle
 req.user.links = links
@@ -141,6 +142,54 @@ export const uploadImage = async (req: Request, res: Response) => {
         })
 
        }) //Leyendo los datos que el usuario ingreso
+
+    } catch (error) {
+         return res.status(500).json({
+            error: 'Hubo un error'
+        })
+    }
+}
+
+//Funcion que nos va a servir si la ruta del perfil de usuario al que se ingreso existe ej: http://localhost:5173/@mariana_react, si existe mostrar el perfil, si no mostrar pantalla de usuario no encontrado.
+//req.params: para recuperar el usuario de la URL
+export const getUserByHandle = async (req: Request, res: Response) => {
+    try {
+        const {handle} = req.params
+//Nos queremos traer solo cierta info, asi que descartamos "id,version,email y password"
+        const user = await User.findOne({handle}).select('-_id -__v -email -password')
+
+        if (!user) {
+            const error = new Error('El usuario no existe')
+            return res.status(404).json({error: error.message})
+        }
+//Si si existe el usuario con ese handle
+        res.json(user)
+
+//Esta info se obtuvo haciendo pruebas desde Postman ej: http://localhost:4000/zuck
+        //console.log(req.params); //salida: { handle: 'zuck' }
+        //console.log(user);//muestra informacion del usuario solo si esta en la DB
+
+
+    } catch (error) {
+         return res.status(500).json({
+            error: 'Hubo un error'
+        })
+    }
+}
+
+//Este controlador nos permite enviar al cliente, si un "slug" o nombre de usuario ya esta en uso y este no podra usarlo
+export const searchByHandle = async (req: Request, res: Response) => {
+    try {
+        const {handle} = req.body
+        const userExist = await User.findOne({handle})
+//En este caso dara alerta si el usuario ya existe
+        if (userExist) {
+            const error = new Error(`(${handle}) Ya esta en uso 😢`)
+
+            return res.status(409).json({error: error.message})
+        }
+//Si el slug esta disponible
+        return res.send(`(${handle}) Esta disponible 👍`)
 
     } catch (error) {
          return res.status(500).json({

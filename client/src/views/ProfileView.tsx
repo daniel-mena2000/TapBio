@@ -17,7 +17,8 @@ const data : UserDataT = queryClient.getQueryData(['user'])!
 
 //Descripcion podemos o no que sea obligatoria,
 // se coloca optionalChaining en automatico ya que pues depende de si la informacion ya llego o no, y te dice este valor puede ser string o undefined, entonces lo toma como opcional
-        const {register,reset, handleSubmit, formState: {errors}} = useForm({defaultValues: {
+        const {register, handleSubmit, formState: {errors}} = useForm({defaultValues: {
+            name: data?.name,
             handle: data?.handle,
             description: data?.description
         }})
@@ -76,15 +77,20 @@ const handleChange = (e:  React.ChangeEvent<HTMLInputElement, HTMLInputElement>)
 //formData solo actualiza solo descripcition y handle pero podemos obtener toda la instancia de "user" para actualizar esos datos que necesitamos "description" y "handle"
 const handleUserProfileProps = (formData: ProfileForm) => {
     const user : UserDataT = queryClient.getQueryData(['user'])!
+    user.name = formData.name
     user.description = formData.description
     user.handle = formData.handle
-    //console.log(user);
+    console.log(user);
     //console.log(formData);
 
-//En mutate colocas tus variables que vas a enviar para realizar el cambio, en este caso es handle y description
+
+//En mutate colocas tus variables que vas a enviar para realizar el cambio, en este caso es handle, description y name
     updateProfileMutation.mutate(user)
+        queryClient.invalidateQueries({queryKey: ['user']})
 
 }
+  const DEFAULT_PROFILE_IMAGE =
+  "https://res.cloudinary.com/dw0gkpu7i/image/upload/v1781383771/ubyfrxropymb5wtp7mtd.png"
 
   return (
     <form
@@ -105,27 +111,12 @@ const handleUserProfileProps = (formData: ProfileForm) => {
       {/* Imagen */}
       <div className="flex flex-col items-center gap-4">
         <img
-          src={data.image}
+          src={DEFAULT_PROFILE_IMAGE}
           alt="Avatar"
           className="h-28 w-28 rounded-full object-cover border-4 border-slate-100"
         />
 
-        <label
-          htmlFor="image"
-          className="
-            cursor-pointer
-            rounded-xl
-            border
-            border-slate-200
-            px-4
-            py-2
-            text-sm
-            font-medium
-            text-slate-600
-            hover:bg-slate-50
-            transition
-          "
-        >
+        <label htmlFor="image" className=" cursor-pointer rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition">
           Cambiar imagen
         </label>
 
@@ -137,6 +128,27 @@ const handleUserProfileProps = (formData: ProfileForm) => {
           onChange={handleChange}
         />
       </div>
+
+       {/* Nombre */}
+      <div className="space-y-2">
+        <label
+          htmlFor="name"
+          className="block text-sm font-medium text-slate-700">
+          Nombre
+        </label>
+
+        <input
+          id="name"
+          type="text"
+          placeholder="Daniel"
+          className="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-800 placeholder-slate-400 outline-none transition focus:border-blue-500"
+          {...register('name', {
+            required: "El nombre de Usuario es obligatorio"
+          })}
+        />
+      </div>
+    {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
+
 
       {/* Handle */}
       <div className="space-y-2">
@@ -151,21 +163,9 @@ const handleUserProfileProps = (formData: ProfileForm) => {
           id="handle"
           type="text"
           placeholder="@daniel_mena"
-          className="
-            w-full
-            rounded-xl
-            border
-            border-slate-200
-            px-4
-            py-3
-            text-slate-800
-            placeholder-slate-400
-            outline-none
-            transition
-            focus:border-blue-500
-          "
+            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-800 placeholder-slate-400 outline-none transition focus:border-blue-500"
           {...register('handle', {
-            required: "El nombre de Usuario es obligatorio"
+            required: "El handle de Usuario es obligatorio"
           })}
         />
       </div>
@@ -202,18 +202,12 @@ const handleUserProfileProps = (formData: ProfileForm) => {
         />
       </div>
 
+
       {/* Botón */}
       <button
         type="submit"
         className="
-          w-full
-          rounded-xl
-          bg-blue-500
-          py-3
-          font-medium
-          text-white
-          transition
-          hover:bg-blue-600
+         w-full rounded-2xl bg-blue-500 py-3 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-600 hover:shadow-xl active:translate-y-0 cursor-pointer
         "
       >
         Guardar cambios

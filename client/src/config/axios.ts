@@ -4,7 +4,9 @@ import axios from "axios";
 //baseURL para asignar el valor que tenemos como variable de entorno
 const api = axios.create({
     baseURL:import.meta.env.VITE_API_BACKEND
+
 })
+
 
 //Los interceptors de Axios son funciones que se ejecutan antes de enviar una petición o después de recibir una respuesta.Piensa en ellos como un "punto de control" por donde pasan todas las peticiones.
 //Sin interceptor: Tendrías que enviar el token manualmente en cada petición:

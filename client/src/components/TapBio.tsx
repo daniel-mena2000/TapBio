@@ -4,6 +4,7 @@ import NavigationTabs from "../components/NavigationTabs";
 import type { SocialNetwork, UserDataT } from "../types";
 import { useEffect, useState } from "react";
 import { TapBioLinks } from "./TapBioLinks";
+import HeaderComponent from "./HeaderComponent";
 
 type TapBioProps = {
     data: UserDataT
@@ -18,44 +19,19 @@ export function TapBio({data}: TapBioProps) {
     useEffect(()=> {
         setEnabledLinks(JSON.parse(data.links).filter((item: SocialNetwork)  => item.enabled))
     },[data])
+     const DEFAULT_PROFILE_IMAGE =
+  "https://res.cloudinary.com/dw0gkpu7i/image/upload/v1781383771/ubyfrxropymb5wtp7mtd.png";
 
 return <>
 <div className="min-h-screen bg-slate-50">
-        {/* Header */}
-        <header className="border-b border-slate-200 bg-white">
-          <div className="mx-auto max-w-6xl px-6 h-20 flex items-center justify-between">
-            <img
-              src="/logoTapBioA.png"
-              alt="TapBio"
-              className="h-12"
-            />
+      <HeaderComponent/>
 
-            <button
-              className="
-                rounded-xl
-                px-4
-                py-2
-                text-sm
-                font-medium
-                text-slate-600
-                hover:bg-slate-100
-                hover:text-blue-500
-                transition
-                cursor-pointer
-              "
-            >
-              Cerrar sesión
-            </button>
-          </div>
-        </header>
-
-        {/* Contenido */}
         <main className="mx-auto max-w-6xl px-6 py-10">
           <NavigationTabs />
 
           <div className="flex justify-end mb-8">
             <Link
-              to=""
+              to={`/${data.handle}`}
               target="_blank"
               rel="noreferrer noopener"
               className="
@@ -69,32 +45,15 @@ return <>
             </Link>
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
-            {/* Formulario */}
-            <div
-              className="
-                rounded-3xl
-                bg-white
-                p-8
-                shadow-sm
-                border
-                border-slate-200
-              "
-            >
+          <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
+            <div className="rounded-3xl bg-white p-8 shadow-sm border border-slate-200">
+
               <Outlet />
             </div>
 
-            {/* Preview */}
             <aside
-              className="
-                rounded-3xl
-                bg-white
-                p-6
-                shadow-sm
-                border
-                border-slate-200
-              "
-            >
+              className=" rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
+
               <h3 className="font-semibold text-slate-800">
                 Vista previa
               </h3>
@@ -103,18 +62,28 @@ return <>
                 Así verán tu perfil los visitantes.
               </p>
 
-              <div className="mt-10">
-                    <p className="text-4xl text-center p-2">{data.name}</p>
-                    <span className="text-xs text-gray-400 text-center block w-full p-2">{data.handle}</span>
-                    {data.image ?
-                        <img src={data.image} alt="Imagen perfil" className="mx-auto max-w-['250px']"/>
-                        :
-                        <img src="https://res.cloudinary.com/dw0gkpu7i/image/upload/q_auto/f_auto/v1781383771/ubyfrxropymb5wtp7mtd.png" alt="" />
-                    }
 
-                    <p className="text-center text-lg font-black p-2">{data.description}</p>
+                <div className="mx-auto flex max-w-md flex-col items-center px-6 py-12">
+                    <img src={data.image || DEFAULT_PROFILE_IMAGE}
+                     alt={data.name}
+                     className="h-32 w-32 rounded-full object-cover"
+                    />
 
-                    <div className="mt-20 flex flex-col gap-5">
+                    <div className="mt-6 text-center">
+                        <h1 className="text-3xl font-bold text-slate-900">
+                        {data.name}
+                        </h1>
+
+                        <p className="mt-1 text-blue-500 font-medium">
+                        {data.handle}
+                        </p>
+
+                        <p className="mt-4 leading-relaxed text-slate-500">
+                        {data.description}
+                        </p>
+                    </div>
+
+                    <div className="mt-20 flex flex-col gap-5 w-full">
                         {enabledLinks.map(item => (
                             <TapBioLinks key={item.name} item={item}/>
                         ))}

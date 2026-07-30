@@ -6,6 +6,9 @@ import AuthLayout from "./Layout/AuthLayout";
 import AppLayout from "./Layout/AppLayout";
 import { LinkTapBioView } from "./views/LinkTapBioView";
 import { ProfileView } from "./views/ProfileView";
+import HandleViewProfile from "./views/HandleViewProfile";
+import ProfileLayout from "./Layout/ProfileLayout";
+import NotFoundView from "./views/NotFoundView";
 export const router = createBrowserRouter([
     {
   path: "/",
@@ -38,6 +41,20 @@ export const router = createBrowserRouter([
       Component: ProfileView
     }
     ]
-  }
+  },
+  {
+    path: ":handle",
+    Component: ProfileLayout,
+    children: [
+       {
+         index: true,
+         Component: HandleViewProfile
+       }
+    ]
+  },
+  {
+  path: "*",
+  Component: NotFoundView
+}
 
 ])

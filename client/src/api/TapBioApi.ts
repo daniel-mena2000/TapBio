@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios";
 import api from "../config/axios";
-import type { UserDataT } from "../types";
+import type { UserDataT, UserHandle } from "../types";
 
 export async function getUser() {
 //Recordar que la ruta "/user" pide un bearer y un token en el backend para poder acceder
@@ -63,4 +63,36 @@ export async function uploadImage(file: File) {
             throw error
     }
 
+}
+
+
+//Funcion para obtener el handle de la URL obtenida de: HandleViewProfile y pasarla al backend para traer la info del usuario y pintar su perfil en la ruta ej: http://localhost:5173/@mariana_react
+export async function getUserByhandle(handle: string) {
+//formData son los datos que vamos a enviar
+     try {
+            const url = `/${handle}`
+            const {data} = await api.get<UserHandle>(url)
+            return data
+
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                throw new Error(error.response.data.error);
+            }
+            throw error
+        }
+}
+
+//Llamada a nuestra API para saber si el handle o nombre de usuario esta o no en uso
+export async function searchByHandle(handle: string) {
+     try {
+
+            const {data} = await api.post<string>('/search', {handle})
+            return data
+
+        } catch (error) {
+            if (isAxiosError(error) && error.response) {
+                throw new Error(error.response.data.error);
+            }
+            throw error
+        }
 }

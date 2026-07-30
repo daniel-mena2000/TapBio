@@ -1,16 +1,23 @@
 import {useForm } from "react-hook-form"
 import {isAxiosError} from "axios"
 import { toast } from "sonner" //Mandamos llamar el componente de toast
-import { Link } from "react-router"
+import { Link, useLocation, useNavigate } from "react-router"
 import type { RegisterForm } from "../types"
 import { ErrorMessage } from "../components/ErrorMessage"
 import api from "../config/axios"
+import Logo from "../components/Logo"
 
 export function RegisterView() {
-//#f3e33f
+
+//Mandamos llamar location ya que queremos el state del Link Crear cuenta de "SearchHadleForm" y se lo pasamos a initialValues, si es que le estamos pasando location, si no pues lo dejamos vacio. Para asi llenar en automatico el input con ese handle, los ponemos opcionales, si no la pagina de resgitrarse nos dara error, ya que serian obligatorio un handle de primera entrada a la ruta.
+const location = useLocation()
+//console.log(location.state.handle);
+
+const navigate = useNavigate()
+
 //Estos valores los pasaremos como valores iniciales de nuestro formulario, useForm tiene un metodo para agregarlos
     const initialValues: RegisterForm = {
-        name: '', email: '', handle: '', password: '', confirmPassword: ''
+        name: '', email: '', handle: location?.state?.handle || '', password: '', confirmPassword: ''
     }
 
     const {register, watch, reset, handleSubmit, formState: {errors}} = useForm({defaultValues: initialValues})
@@ -26,6 +33,7 @@ export function RegisterView() {
 //Cuando alguien se registre queremos llamandar llamar toast
             toast.success(data)
             reset()
+            navigate('/auth/login')
         } catch (error) {
 // Verifica que el error proviene de Axios y obtiene el mensaje de error enviado por el backend mensajes como que el usuario ya esta registrado.
             if (isAxiosError(error) && error.response) {
@@ -42,10 +50,10 @@ export function RegisterView() {
 
 
     {/* Imagen */}
-    <div className="order-2 md:order-1 flex justify-center items-center flex-col mt-8 md:mt-0 bg-blue-800 h-full">
+    <div className="order-2 md:order-1 flex justify-center items-center flex-col mt-8 md:mt-0 bg-slate-950 h-full">
 
        <div className="max-w-lg space-y-4 p-6">
-            <h2 className="lg:text-6xl text-2xl font-bold text-yellow-300 leading-tight">
+            <h2 className="lg:text-6xl text-2xl font-bold text-blue-500 leading-tight">
                 Tu presencia digital en un solo lugar
             </h2>
 
@@ -65,7 +73,7 @@ export function RegisterView() {
     {/* Contenido */}
     <div className="order-1 md:order-2">
         <div className="flex justify-center">
-            <img src="/logoTapBio.png" alt="" className="h-40"/>
+            <Logo/>
         </div>
 
       {/* Encabezado opcional para darle contexto al diseño bonito */}

@@ -8,6 +8,8 @@ export type UserDataT = {
     links: string
 }
 
+export type UserHandle = Pick<UserDataT, 'description' | 'handle' | 'image' | 'links' | 'name'>
+
 export type RegisterForm = Pick<UserDataT, 'name' | 'email' | 'handle'> & {
         password: string
         confirmPassword: string
@@ -18,7 +20,7 @@ export type UserDataLogin = {
     password: string
 }
 
-export type ProfileForm = Pick<UserDataT, 'handle' | 'description'>
+export type ProfileForm = Pick<UserDataT, 'handle' | 'description' | 'name'>
 
 
 export type SocialNetwork = {

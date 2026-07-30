@@ -1,12 +1,16 @@
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"//useNavigate a diferencia de navigate, te permite renderizar una vista, en este caso redireccionar al perfil una vez se inicie sesión, este solo te pide la URL de donde quieres mandar al usuario
 import { ErrorMessage } from "../components/ErrorMessage"
 import {useForm } from "react-hook-form"
 import type { UserDataLogin } from "../types"
 import { toast } from "sonner" //Mandamos llamar el componente de toast
 import {isAxiosError} from "axios"
 import api from "../config/axios"
+import Logo from "../components/Logo"
 
 export function LoginView() {
+
+    const navigate = useNavigate()
+
         const initialValues: UserDataLogin = {
                 email: '',  password: ''
             }
@@ -18,7 +22,8 @@ export function LoginView() {
             const {data} = await api.post(`/auth/login`, formDataLogin)
 //Recibe 2 parametros (nombre para identificar, datos)
             localStorage.setItem('AUTH_TOKEN', data)
-            console.log('se inicio sesion');
+            navigate('/admin')
+            //console.log('se inicio sesion');
 
 
         reset()
@@ -33,10 +38,10 @@ export function LoginView() {
 
 
 
- <div className="order-2 md:order-1 flex justify-center items-center flex-col mt-8 md:mt-0 bg-blue-800 h-full">
+ <div className="order-2 md:order-1 flex justify-center items-center flex-col mt-8 md:mt-0 bg-slate-950 h-full">
 
        <div className="max-w-lg space-y-4 p-6">
-            <h2 className="lg:text-6xl text-2xl font-bold text-yellow-300 leading-tight">
+            <h2 className="lg:text-6xl text-2xl font-bold text-blue-500 leading-tight">
                 Bienvenido de nuevo
             </h2>
 
@@ -55,7 +60,7 @@ export function LoginView() {
     <div className="order-1 md:order-2">
 
         <div className="flex justify-center">
-            <img src="/logoTapBio.png" alt="" className="h-40"/>
+            <Logo/>
         </div>
 
       {/* Encabezado opcional para darle contexto al diseño bonito */}

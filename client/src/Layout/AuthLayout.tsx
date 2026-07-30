@@ -12,6 +12,8 @@ export default function AuthLayout() {
         <main className="md:min-h-screen md:grid md:grid-cols-2 md:gap-12 md:items-center
         lg:w-full
         sm:w-full" >
+
+
             <Outlet />
         </main>
 </div>

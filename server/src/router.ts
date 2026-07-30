@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { createAccount, getUser, login, updateProfile, uploadImage } from "./handlers/index.js";
+import { createAccount, getUser, getUserByHandle, login, searchByHandle, updateProfile, uploadImage } from "./handlers/index.js";
 import { validationResult } from "express-validator"
 import { handleInputErrors } from "./middleware/validation.js";
 import { authenticate } from "./middleware/auth.js";
@@ -29,6 +29,7 @@ router.post('/auth/login',
 router.get('/user', authenticate, getUser)
 
 router.patch('/user',
+    body('name').notEmpty().withMessage('El nombre no puede ir vacio') ,
     body('handle').notEmpty().withMessage('El handle no puede ir vacio') ,
     body('description').notEmpty().withMessage('la descripcion no puede ir vacia') ,
     handleInputErrors,
@@ -39,5 +40,13 @@ router.patch('/user',
 //Para poder cambiar la imagen primero tiene que estar autenticado
 router.post('/user/image', authenticate, uploadImage)
 
+//Ruta dinamica para el handle del usuario, consultar la DB y traer la informacion ej: { handle: 'zuck' }
+router.get('/:handle', getUserByHandle)
+
+router.post('/search',
+       body('handle').notEmpty().withMessage('El handle no puede ir vacio') ,
+    handleInputErrors,
+    searchByHandle
+)
 
 export default router
