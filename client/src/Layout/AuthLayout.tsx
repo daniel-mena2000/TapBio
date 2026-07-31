@@ -2,6 +2,8 @@ import { Outlet } from "react-router"
 import { Toaster } from "sonner" //Registra Toaster en nuestro proyecto
 
 export default function AuthLayout() {
+
+
   return (
    <div className="mx-auto bg-gray-100 lg:max-w-full md:max-w-4xl">
 

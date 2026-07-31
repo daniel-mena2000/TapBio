@@ -6,8 +6,16 @@ import { toast } from "sonner" //Mandamos llamar el componente de toast
 import {isAxiosError} from "axios"
 import api from "../config/axios"
 import Logo from "../components/Logo"
+import { Navigate } from "react-router";
 
 export function LoginView() {
+
+//Si la sesión esta activa, es decir tenemos un JWTOKEN de usuario activo, queremos que si damos en iniciar sesion en el home, este no nos lleve al panel de iniciar sesion si no al perfil ya que esta la sesion activa y nos redidija al "admin"
+        const token = localStorage.getItem("AUTH_TOKEN");
+        if (token) {
+            return <Navigate to="/admin" replace />;
+        }
+
 
     const navigate = useNavigate()
 

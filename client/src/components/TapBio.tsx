@@ -19,8 +19,8 @@ export function TapBio({data}: TapBioProps) {
     useEffect(()=> {
         setEnabledLinks(JSON.parse(data.links).filter((item: SocialNetwork)  => item.enabled))
     },[data])
-     const DEFAULT_PROFILE_IMAGE =
-  "https://res.cloudinary.com/dw0gkpu7i/image/upload/v1781383771/ubyfrxropymb5wtp7mtd.png";
+
+     const DEFAULT_PROFILE_IMAGE ="https://res.cloudinary.com/dw0gkpu7i/image/upload/v1781383771/ubyfrxropymb5wtp7mtd.png";
 
 return <>
 <div className="min-h-screen bg-slate-50">

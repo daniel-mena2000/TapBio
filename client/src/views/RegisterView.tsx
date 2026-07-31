@@ -58,7 +58,7 @@ const navigate = useNavigate()
             </h2>
 
             <p className="lg:text-xl text-xl text-white leading-relaxed ">
-             Organiza tus redes sociales, proyectos y enlaces favoritos en un perfil
+             Organiza tus redes sociales y enlaces favoritos en un perfil
              único y profesional.
              </p>
     </div>
