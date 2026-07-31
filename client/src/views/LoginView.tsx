@@ -10,7 +10,6 @@ import { Navigate } from "react-router";
 
 export function LoginView() {
 
-//Si la sesión esta activa, es decir tenemos un JWTOKEN de usuario activo, queremos que si damos en iniciar sesion en el home, este no nos lleve al panel de iniciar sesion si no al perfil ya que esta la sesion activa y nos redidija al "admin"
         const token = localStorage.getItem("AUTH_TOKEN");
         if (token) {
             return <Navigate to="/admin" replace />;
@@ -26,26 +25,22 @@ export function LoginView() {
 
         async function handleLogin(formDataLogin: UserDataLogin) {
             try {
-//Aqui están ocurriendo dos cosas al mismo tiempo:1. Envías datos al backend (formDataLogin), 2. Recibes una respuesta del backend {data}, la info destrucutrada solo del thoken que es lo que nos interesa, para despues guardarlo en localstorage
+
             const {data} = await api.post(`/auth/login`, formDataLogin)
-//Recibe 2 parametros (nombre para identificar, datos)
             localStorage.setItem('AUTH_TOKEN', data)
             navigate('/admin')
-            //console.log('se inicio sesion');
 
+            reset()
 
-        reset()
         } catch (error) {
             if (isAxiosError(error) && error.response) {
                 toast.error(error.response.data.error)
             }
         }
         }
+
     return(
         <>
-
-
-
  <div className="order-2 md:order-1 flex justify-center items-center flex-col mt-8 md:mt-0 bg-slate-950 h-full">
 
        <div className="max-w-lg space-y-4 p-6">
@@ -57,21 +52,16 @@ export function LoginView() {
              Accede a tu cuenta y comparte todo lo que importa desde un único enlace.
              </p>
     </div>
-
-      <img
-        src="/login.png"
-        alt="Registro"
-        className="h-52 lg:h-96"
-      />
+      <img src="/login.png" alt="Registro" className="h-52 lg:h-96"/>
     </div>
-    {/* Contenido */}
-    <div className="order-1 md:order-2">
 
+
+
+    <div className="order-1 md:order-2">
         <div className="flex justify-center">
             <Logo/>
         </div>
 
-      {/* Encabezado opcional para darle contexto al diseño bonito */}
       <div className="space-y-1 p-5 text-center">
         <h2 className="text-2xl font-semibold text-slate-800">
           Iniciar Sesión
@@ -87,7 +77,6 @@ export function LoginView() {
               className="mx-auto max-w-md space-y-7 rounded-2xl bg-white p-8 shadow-sm border border-slate-100"
             >
 
-              {/* Correo */}
               <div className="group relative border-b border-slate-400 focus-within:border-blue-400 transition-colors duration-300">
                 <label
                   htmlFor="email"

@@ -25,8 +25,7 @@ export default function SearchHandleForm() {
   const mutation = useMutation({
         mutationFn: searchByHandle
   })
-  //El handle que escriba el usuario en el input, lo tenemos que convertir a un "slug" ya que puede o no tener el formato que nosotros definimos
-  //slugHandle: Es lo que enviaremos a nuestra API paraa ver si ese usuario ya esta en uso
+ 
  const handle = watch("handle");
   const slugHandle = `@${slug(handle, "_")}`;
 
@@ -34,7 +33,6 @@ export default function SearchHandleForm() {
     mutation.mutate(slugHandle)
   };
 
-//  console.log(mutation);
 
 
   return (

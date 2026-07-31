@@ -9,47 +9,34 @@ import Logo from "../components/Logo"
 
 export function RegisterView() {
 
-//Mandamos llamar location ya que queremos el state del Link Crear cuenta de "SearchHadleForm" y se lo pasamos a initialValues, si es que le estamos pasando location, si no pues lo dejamos vacio. Para asi llenar en automatico el input con ese handle, los ponemos opcionales, si no la pagina de resgitrarse nos dara error, ya que serian obligatorio un handle de primera entrada a la ruta.
 const location = useLocation()
-//console.log(location.state.handle);
-
 const navigate = useNavigate()
 
-//Estos valores los pasaremos como valores iniciales de nuestro formulario, useForm tiene un metodo para agregarlos
     const initialValues: RegisterForm = {
         name: '', email: '', handle: location?.state?.handle || '', password: '', confirmPassword: ''
     }
 
     const {register, watch, reset, handleSubmit, formState: {errors}} = useForm({defaultValues: initialValues})
-//Verificamos que las 2 contraseñas de los inputs coincidan, sacamos el valor del input de password, lo asiganamos a una variable, y en el input de confirmPassword usamos: "validate" para hacer una comparativa de las 2 contraseñas
     const password = watch('password')
 
-//formData guarda la info del formulario en un objeto, ya que esta funcion ya se paso a la funcion de: handleSubmit de react-hook-form.
-//Esta funcion se encargara de enviar los datos al blackend
     async function handleRegister(formData: RegisterForm) {
         try {
             const {data} = await api.post(`/auth/register`, formData)
             console.log(data);
-//Cuando alguien se registre queremos llamandar llamar toast
             toast.success(data)
             reset()
             navigate('/auth/login')
         } catch (error) {
-// Verifica que el error proviene de Axios y obtiene el mensaje de error enviado por el backend mensajes como que el usuario ya esta registrado.
             if (isAxiosError(error) && error.response) {
                 toast.error(error.response.data.error)
-
             }
-
         }
 
     }
-
     return (
 <>
 
 
-    {/* Imagen */}
     <div className="order-2 md:order-1 flex justify-center items-center flex-col mt-8 md:mt-0 bg-slate-950 h-full">
 
        <div className="max-w-lg space-y-4 p-6">
@@ -70,13 +57,12 @@ const navigate = useNavigate()
 
       />
     </div>
-    {/* Contenido */}
+
     <div className="order-1 md:order-2">
         <div className="flex justify-center">
             <Logo/>
         </div>
 
-      {/* Encabezado opcional para darle contexto al diseño bonito */}
       <div className="space-y-1 p-5 text-center">
         <h2 className="text-2xl font-semibold text-slate-800">
           Crea tu cuenta
@@ -89,7 +75,7 @@ const navigate = useNavigate()
       <form onSubmit={handleSubmit(handleRegister)}
         className="mx-auto max-w-md space-y-7 rounded-2xl bg-white p-8 shadow-sm border border-slate-100"
       >
-        {/* Nombre */}
+
         <div className="group relative border-b border-slate-400 focus-within:border-blue-400 transition-colors duration-300">
           <label
             htmlFor="name"
@@ -109,7 +95,7 @@ const navigate = useNavigate()
         </div>
         {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
 
-        {/* Correo */}
+
         <div className="group relative border-b border-slate-400 focus-within:border-blue-400 transition-colors duration-300">
           <label
             htmlFor="email"
@@ -133,7 +119,7 @@ const navigate = useNavigate()
         </div>
         {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
 
-        {/* Handle */}
+
         <div className="group relative border-b border-slate-400 focus-within:border-blue-400 transition-colors duration-300">
           <label
             htmlFor="handle"
@@ -153,7 +139,7 @@ const navigate = useNavigate()
         </div>
         {errors.handle && <ErrorMessage>{errors.handle.message}</ErrorMessage>}
 
-        {/* Contraseña */}
+
         <div className="group relative border-b border-slate-400 focus-within:border-blue-400 transition-colors duration-300">
           <label
             htmlFor="password"
@@ -177,7 +163,7 @@ const navigate = useNavigate()
         </div>
         {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
 
-        {/* Confirmar Contraseña */}
+
         <div className="group relative border-b border-slate-400 focus-within:border-blue-400 transition-colors duration-300">
           <label
             htmlFor="confirmPassword"
@@ -201,7 +187,7 @@ const navigate = useNavigate()
           <ErrorMessage>{errors.confirmPassword.message}</ErrorMessage>
         )}
 
-        {/* Botón */}
+
         <button
           type="submit"
           className="w-full rounded-xl bg-slate-900 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-600/20 active:scale-[0.98]"

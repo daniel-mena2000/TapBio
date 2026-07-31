@@ -9,7 +9,6 @@ const app = express()
 
 connectDB()
 
-//le pasamos a cors nuestra configuracion de corsConfig
 app.use(cors(corsConfig))
 
 app.use(express.json())

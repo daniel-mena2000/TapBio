@@ -12,10 +12,9 @@ type TapBioProps = {
 
 export function TapBio({data}: TapBioProps) {
 
-//Si queremos colocar un red social en el perfil verificamos cuales estan como enabled
     const [enabledLinks, setEnabledLinks] = useState<SocialNetwork[]>(JSON.parse(data.links).filter((item: SocialNetwork)  => item.enabled))
 
-//UseEffect para que cada que habilite o deshabilite un link este se vea reflejado en la interfaz dependiendo si esta activo o no
+
     useEffect(()=> {
         setEnabledLinks(JSON.parse(data.links).filter((item: SocialNetwork)  => item.enabled))
     },[data])

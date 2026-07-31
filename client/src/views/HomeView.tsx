@@ -82,15 +82,10 @@ export function HomeView() {
 
           <div className="mt-10">
 
-            
+
     <SearchHandleForm />
   </div>
-
-
       </div>
-
-
-
 </>
   );
 }

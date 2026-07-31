@@ -5,7 +5,6 @@ import { useLocation } from "react-router";
 export default function HeaderComponent() {
 
     const location = useLocation()
-    //console.log(location);
 
     return(
          <header className="border-b border-slate-200 bg-white">

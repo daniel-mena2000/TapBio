@@ -27,11 +27,8 @@ if (isLoading) {
 }
     if (error) return <NotFoundView/>
 
-//Si existe el usuario retornamos su informacion
     if (data) return <HandleDataProfile data={data}/>
 
-    //console.log(params);//{handle: '@mariana_react'}
-    //console.log(handle);//'@mariana_react'
 
 
     return(

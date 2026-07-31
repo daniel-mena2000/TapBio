@@ -93,8 +93,7 @@ req.user.description = description
 req.user.handle = handle
 req.user.links = links
 
-//Para TypeScript, req.user es simplemente: handle,name,email,passwordy description ya que asi lo modificamos anteriormente, es por eso que save() nos marca error ya que req.user no sabe que es. es por eso que necesitamos extender de Document donde se encuentran estos metodos de mongoose, todo esto en User.ts
-//También te recomiendo agregar una validación porque user es opcional:
+
 if (!req.user) {
     return res.status(401).json({
         error: 'No autorizado'
@@ -117,10 +116,7 @@ export const uploadImage = async (req: Request, res: Response) => {
     const formi = formidable({multiples: false}) //Configuración del soporte
 
     try {
-//Recibe 3 parametros
        formi.parse(req, (error, fields, files) => {
-//Le pasamos nuestro "filepthat", {} son algunas configuraciones, y despues recibe una funcion asincrona, ya que va a interactuar con nuestra API, esta funcion recibe "error, result"
-//result nos dara toda la info de claudinary entre esa info estara "secure_url" donde estara ya alojada la imagen
         cloudinary.uploader.upload(files.avatar[0].filepath, {}, async function(error, result) {
 
             if (error) {
@@ -129,19 +125,13 @@ export const uploadImage = async (req: Request, res: Response) => {
                 })
            }
            if (result) {
-//Aignamos la imagen
             req.user.image = result.secure_url
-
             await req.user.save()
-
             res.json({image: result.secure_url})
-
            }
-
-
         })
 
-       }) //Leyendo los datos que el usuario ingreso
+       })
 
     } catch (error) {
          return res.status(500).json({
@@ -151,7 +141,6 @@ export const uploadImage = async (req: Request, res: Response) => {
 }
 
 //Funcion que nos va a servir si la ruta del perfil de usuario al que se ingreso existe ej: http://localhost:5173/@mariana_react, si existe mostrar el perfil, si no mostrar pantalla de usuario no encontrado.
-//req.params: para recuperar el usuario de la URL
 export const getUserByHandle = async (req: Request, res: Response) => {
     try {
         const {handle} = req.params
@@ -162,13 +151,7 @@ export const getUserByHandle = async (req: Request, res: Response) => {
             const error = new Error('El usuario no existe')
             return res.status(404).json({error: error.message})
         }
-//Si si existe el usuario con ese handle
         res.json(user)
-
-//Esta info se obtuvo haciendo pruebas desde Postman ej: http://localhost:4000/zuck
-        //console.log(req.params); //salida: { handle: 'zuck' }
-        //console.log(user);//muestra informacion del usuario solo si esta en la DB
-
 
     } catch (error) {
          return res.status(500).json({
@@ -177,20 +160,16 @@ export const getUserByHandle = async (req: Request, res: Response) => {
     }
 }
 
-//Este controlador nos permite enviar al cliente, si un "slug" o nombre de usuario ya esta en uso y este no podra usarlo
 export const searchByHandle = async (req: Request, res: Response) => {
     try {
         const {handle} = req.body
         const userExist = await User.findOne({handle})
-//En este caso dara alerta si el usuario ya existe
         if (userExist) {
             const error = new Error(`(${handle}) Ya esta en uso 😢`)
 
             return res.status(409).json({error: error.message})
         }
-//Si el slug esta disponible
         return res.send(`(${handle}) Esta disponible 👍`)
-
     } catch (error) {
          return res.status(500).json({
             error: 'Hubo un error'

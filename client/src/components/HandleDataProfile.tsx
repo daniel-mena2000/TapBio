@@ -8,8 +8,7 @@ export default function HandleDataProfile({data,}: HandleDataProfileProps) {
 
   const links: SocialNetwork[] = JSON.parse(data.links);
 
-  const DEFAULT_PROFILE_IMAGE =
-  "https://res.cloudinary.com/dw0gkpu7i/image/upload/v1781383771/ubyfrxropymb5wtp7mtd.png";
+  const DEFAULT_PROFILE_IMAGE = "https://res.cloudinary.com/dw0gkpu7i/image/upload/v1781383771/ubyfrxropymb5wtp7mtd.png";
 
   return (
     <div className="mx-auto flex max-w-md flex-col items-center px-6 py-12">

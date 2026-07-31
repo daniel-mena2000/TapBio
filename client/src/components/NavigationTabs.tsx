@@ -11,7 +11,6 @@ function classNames(...classes: string[]) {
 }
 
 export default function NavigationTabs() {
-//useLocation() este es un hook especial de react-router en este caso lo usaremos para saber en que link nos encontramos
     const location = useLocation()
     const navigate = useNavigate()
 
@@ -49,12 +48,10 @@ export default function NavigationTabs() {
                                 key={tab.name}
                                 to={tab.href}
                                className={classNames(
-  location.pathname === tab.href
-    ? "bg-blue-50 text-blue-600"
-    : "text-slate-500 hover:bg-slate-100",
-  "flex items-center gap-2 rounded-xl px-4 py-2 transition"
-)}
-                            >
+                                        location.pathname === tab.href
+                                            ? "bg-blue-50 text-blue-600"
+                                            : "text-slate-500 hover:bg-slate-100", "flex items-center gap-2 rounded-xl px-4 py-2 transition"
+                                )}>
                                 <tab.icon
                                     className={classNames(
                                         location.pathname === tab.href ? 'text-blue-500' : 'text-gray-400 group-hover:text-gray-500',

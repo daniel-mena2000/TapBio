@@ -4,7 +4,6 @@ type TapBioLinksProps = {
   item: SocialNetwork;
 };
 
-// Este componente se renderiza en LinkTapBioView
 export function TapBioLinks({ item }: TapBioLinksProps) {
   return (
     <li className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-lg">
